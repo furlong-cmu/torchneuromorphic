@@ -67,13 +67,13 @@ def create_events_hdf5(directory, hdf5_filename):
                     ad_dset = subgrp.create_dataset('addrs' , data=addrs, dtype=np.uint8)
                     lbl_dset= subgrp.create_dataset('labels', data=lbls[i]-1, dtype=np.uint8)
                     subgrp.attrs['meta_info']= str(metas[-1])
-                    assert lbls[i]-1 in range(44) # TODO: why put this
+                    assert lbls[i]-1 in range(44) # TODO: why put this line
                     key += 1
-            extra_grp.create_dataset('train_keys', data=train_keys)
-            extra_grp.create_dataset('test_keys', data=test_keys)
-            extra_grp.attrs['N'] = len(train_keys) + len(test_keys)
-            extra_grp.attrs['Ntrain'] = len(train_keys)
-            extra_grp.attrs['Ntest'] = len(test_keys)
+        extra_grp.create_dataset('train_keys', data=train_keys)
+        extra_grp.create_dataset('test_keys', data=test_keys)
+        extra_grp.attrs['N'] = len(train_keys) + len(test_keys)
+        extra_grp.attrs['Ntrain'] = len(train_keys)
+        extra_grp.attrs['Ntest'] = len(test_keys)
             
 def gather_aedat(directory, start_id, end_id, filename_prefix = 'user'):
     if not os.path.isdir(directory):
