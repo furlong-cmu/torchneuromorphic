@@ -80,3 +80,7 @@ dcll.egg-info/
 .project
 .pydevproject
 runs2/
+
+.idea/
+.DS_Store
+torchneuromorphic/.DS_Store

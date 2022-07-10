@@ -18,6 +18,7 @@ import torch.utils.data
 from ..events_timeslices import *
 from ..utils import *
 import os
+from .rotations import make_new_classes
 
 def create_events_hdf5(directory, hdf5_filename):
     fns_train = gather_aedat(directory,1,24)
@@ -37,35 +38,42 @@ def create_events_hdf5(directory, hdf5_filename):
         for file_d in tqdm(fns_train+fns_test):
             istrain = file_d in fns_train
             data, labels_starttime = aedat_to_events(file_d)
-            tms = data[:,0]
-            ads = data[:,1:]
+            # tms = data[:,0]
+            # ads = data[:,1:]
             lbls = labels_starttime[:,0]
+            new_data, new_label = make_new_classes(data, lbls)
             start_tms = labels_starttime[:,1]
             end_tms = labels_starttime[:,2]
             out = []
 
-            for i, v in enumerate(lbls):
-                if istrain: 
-                    train_keys.append(key)
-                else:
-                    test_keys.append(key)
-                s_ = get_slice(tms, ads, start_tms[i], end_tms[i])
-                times = s_[0]
-                addrs = s_[1]
-                subj, light = file_d.split('/')[-1].split('.')[0].split('_')[:2]
-                metas.append({'key':str(key), 'subject':subj,'light condition':light, 'training sample':istrain}) 
-                subgrp = data_grp.create_group(str(key))
-                tm_dset = subgrp.create_dataset('times' , data=times, dtype=np.uint32)
-                ad_dset = subgrp.create_dataset('addrs' , data=addrs, dtype=np.uint8)
-                lbl_dset= subgrp.create_dataset('labels', data=lbls[i]-1, dtype=np.uint8)
-                subgrp.attrs['meta_info']= str(metas[-1])
-                assert lbls[i]-1 in range(11)
-                key += 1
-        extra_grp.create_dataset('train_keys', data=train_keys)
-        extra_grp.create_dataset('test_keys', data=test_keys)
-        extra_grp.attrs['N'] = len(train_keys) + len(test_keys)
-        extra_grp.attrs['Ntrain'] = len(train_keys)
-        extra_grp.attrs['Ntest'] = len(test_keys)
+            for j in range(len(new_label)):
+
+                tms = new_data[j][:,0]
+                ads = new_data[j][:,1:]
+                lbls = new_label[j]
+
+                for i, v in enumerate(new_label[j]):
+                    if istrain:
+                        train_keys.append(key)
+                    else:
+                        test_keys.append(key)
+                    s_ = get_slice(tms, ads, start_tms[i], end_tms[i])
+                    times = s_[0]
+                    addrs = s_[1]
+                    subj, light = file_d.split('/')[-1].split('.')[0].split('_')[:2]
+                    metas.append({'key':str(key), 'subject':subj,'light condition':light, 'training sample':istrain})
+                    subgrp = data_grp.create_group(str(key))
+                    tm_dset = subgrp.create_dataset('times' , data=times, dtype=np.uint32)
+                    ad_dset = subgrp.create_dataset('addrs' , data=addrs, dtype=np.uint8)
+                    lbl_dset= subgrp.create_dataset('labels', data=lbls[i]-1, dtype=np.uint8)
+                    subgrp.attrs['meta_info']= str(metas[-1])
+                    assert lbls[i]-1 in range(44) # TODO: why put this
+                    key += 1
+            extra_grp.create_dataset('train_keys', data=train_keys)
+            extra_grp.create_dataset('test_keys', data=test_keys)
+            extra_grp.attrs['N'] = len(train_keys) + len(test_keys)
+            extra_grp.attrs['Ntrain'] = len(train_keys)
+            extra_grp.attrs['Ntest'] = len(test_keys)
             
 def gather_aedat(directory, start_id, end_id, filename_prefix = 'user'):
     if not os.path.isdir(directory):
