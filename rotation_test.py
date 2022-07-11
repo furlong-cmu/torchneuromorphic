@@ -12,11 +12,11 @@ train_dl, test_dl = create_dataloader(
 # data_it = next(data._sampler_iter)
 fig, ax = plt.subplots()
 
-for i, v in enumerate(train_dl):
-    print(np.argmax(v[1][0]))
-    tt = v[0][0,:,1,:,:]
-    anim = splt.animator(tt, fig, ax)
-    plt.show()
-    break
+# for i, v in enumerate(train_dl):
+#     print(np.argmax(v[1][0]))
+#     tt = v[0][0,:,1,:,:]
+#     anim = splt.animator(tt, fig, ax)
+#     plt.show()
+#     break
 
 pass
