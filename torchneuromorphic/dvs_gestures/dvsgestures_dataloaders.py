@@ -159,9 +159,9 @@ def create_dataloader(
         transform_test = default_transform(chunk_size_test)
 
     if target_transform_train is None:
-        target_transform_train =Compose([Repeat(chunk_size_train), toOneHot(11)])
+        target_transform_train =Compose([Repeat(chunk_size_train), toOneHot(44)])
     if target_transform_test is None:
-        target_transform_test = Compose([Repeat(chunk_size_test), toOneHot(11)])
+        target_transform_test = Compose([Repeat(chunk_size_test), toOneHot(44)])
 
     train_d = DVSGestureDataset(root,
                                 train=True,
@@ -183,7 +183,7 @@ def create_dataloader(
 
     test_dl = torch.utils.data.DataLoader(test_d, batch_size=batch_size, **dl_kwargs)
 
-    return train_dl, test_dl
+    return train_d, test_d
 
 
 

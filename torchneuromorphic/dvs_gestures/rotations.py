@@ -2,9 +2,9 @@ import numpy as np
 
 def make_new_classes(sample, label, num_gestures=11):
 
-    degs = [90., 180., 270.]
-    samples = [sample]
-    labels = [label]
+    degs = [90., 180., 270., 0.]
+    samples = []
+    labels = []
     for d_idx, d in enumerate(degs):
         homogeneous_samples = np.hstack((sample,
                                          np.ones((len(sample),1)))).T
@@ -16,7 +16,7 @@ def make_new_classes(sample, label, num_gestures=11):
     return samples, labels
 
 
-def make_rot_matrix(angle, x_c=64, y_c=64):
+def make_rot_matrix(angle, x_c=63.5, y_c=63.5):
     '''
     This function is assuming the original data is in the format
     (time, x, y, polarity, 1) and that samples are contained in 

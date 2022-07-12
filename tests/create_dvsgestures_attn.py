@@ -51,11 +51,11 @@ def create_dataloader(
     if target_transform_train is None:
         target_transform_train = transforms.Compose([
             transforms.Repeat(chunk_size_train),
-            transforms.toOneHot(11)])
+            transforms.toOneHot(44)])
     if target_transform_test is None:
         target_transform_test =  transforms.Compose([
             transforms.Repeat(chunk_size_test),
-            transforms.toOneHot(11)])
+            transforms.toOneHot(44)])
 
     train_d = DVSGestureDataset(root,
                                 train=True,

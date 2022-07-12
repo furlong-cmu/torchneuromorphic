@@ -52,7 +52,7 @@ def create_events_hdf5(directory, hdf5_filename):
                 ads = new_data[j][:,1:]
                 lbls = new_label[j]
 
-                for i, v in enumerate(new_label[j]):
+                for i, label_num in enumerate(lbls):
                     if istrain:
                         train_keys.append(key)
                     else:
@@ -65,9 +65,9 @@ def create_events_hdf5(directory, hdf5_filename):
                     subgrp = data_grp.create_group(str(key))
                     tm_dset = subgrp.create_dataset('times' , data=times, dtype=np.uint32)
                     ad_dset = subgrp.create_dataset('addrs' , data=addrs, dtype=np.uint8)
-                    lbl_dset= subgrp.create_dataset('labels', data=lbls[i]-1, dtype=np.uint8)
+                    lbl_dset= subgrp.create_dataset('labels', data=label_num-1, dtype=np.uint8)
                     subgrp.attrs['meta_info']= str(metas[-1])
-                    assert lbls[i]-1 in range(44) # TODO: why put this line
+                    assert label_num-1 in range(44) # TODO: why put this line
                     key += 1
         extra_grp.create_dataset('train_keys', data=train_keys)
         extra_grp.create_dataset('test_keys', data=test_keys)
